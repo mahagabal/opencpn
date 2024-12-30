@@ -13,6 +13,8 @@ on:
       - master
     paths-ignore:
       - 'manual/**'
+  schedule:
+    - cron: "10 */6 * * *"
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
