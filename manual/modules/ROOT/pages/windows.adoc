@@ -1,0 +1,251 @@
+= Compiling on Windows
+
+== 5.8.0+ Fast Track
+
+From version 5.8.0 the windows build system has been revised.
+The fast track described here is simplified and without all the options
+provided by the procedure described from next section.
+To set up a complete directly usable local development environment,
+you should probably prefer the workflow implemented by the
+`winConfig.bat` script described in the next chapter.
+
+Steps to to make a build:
+
+. Get Visual Studio Community 2022,  either the command line tools or the
+  complete environment, from https://visualstudio.microsoft.com/vs/community/
+. Install the choco package manager, https://chocolatey.org/install
+. Clone the sources and move into them: +
+
+       > git clone https://github.com/OpenCPN/OpenCPN.git
+       > cd OpenCPN
+
+. Run the script _buildwin\win_deps.bat_. First time script installs programs
+  and should be invoked with administrative privileges using the Visual Studio
+  Command Line Interface. Following runs can (i. e., should) be run as a
+  regular user.
+. Run the script _ci\appveyor.bat_. This will configure the project using
+  cmake and make an initial build.
+
+After the first build, new builds can be done using in the _build_ directory
+using:
+```
+    > cmake --build . --target opencpn --config Release
+```
+
+*Notes:*
+
+* `--target opencpn` creates the main executable. Other targets which can be
+  built include
+
+** `--target opencpn-cmd` -- Command line tool
+** `--target opencpn-glutil` -- Command line tool for testing OpenGL capabilities of the system
+   (The `opencpn-glutil.exe` build product is required in the runtime folder for OpenGL to work)
+** `--target tests` -- Command line unit tests
+** `--target package` -- NSIS installer
+
+* It is perfectly possible to use `--config Debug` to create an executable with
+  debugging symbols etc. However, doing so will make the plugins in the
+  catalog incompatible as it is not possible to load optimized libraries into
+  an opencpn debug build. Prefer `RelWithDebInfo` configuration in most cases.
+* _win_deps.bat_ stores files in the _cache_ directory. This can be removed
+  safely,  it is re-created from scratch by _win_deps.bat_
+* The correct options to invoke cmake manually can be found  in
+  _ci\appveyor.bat_
+* Both _win_deps.bat_ and _appveyor.bat_ are used in the ci builds and should
+  thus be reasonably tested. However, user environment (in particular PATH))
+  can make them fail.
+
+== Complete builds using Visual Studio 2022 Community Edition or Visual Studio 2019 Community Edition
+
+The steps here describe an alternative to the "Fast Track" scenario above.  It is much
+ simpler to make a complete build in Visual Studio, including full source debugging
+ with Intellisense(R).
+
+Quick start:
+
+From the Windows Desktop open _x86 Native Tools Command Prompt for VS 2022_ (or 2019). Then
+ enter these 4 commands:
+[,console]
+----
+$ git clone https://github.com/opencpn/opencpn
+$ cd opencpn
+$ ".\buildwin\winConfig.bat"
+$ ".\build\opencpn.sln"
+----
+When Visual Studio opens, select the desired build configuration (Debug, Release, etc.) and you
+are ready to edit and build. Click the Debug button to build and open OpenCPN in the VS debugger.
+
+Here are more details with explanations of each step.
+
+. Install Visual Studio 2022 Community Edition
+  https://visualstudio.microsoft.com/downloads/. Be sure to select components:
++
+* [*] ```Desktop development with C++```
+* [*] ```C++ CMake tools for windows```
++
+. Install git for Windows: https://git-scm.com/download/win
+. Open _x86 Native Tools Command Prompt for Visual Studio 2022_
+. Create folder where you want to work with OpenCPN sources, something
+   like this:
++
+[,console]
+----
+$ mkdir \Users\myname\projects
+$ cd \Users\myname\projects
+----
++
+. Clone Opencpn, for example:
++
+[,console]
+----
+$ cd \Users\myname\projects
+$ git clone https://github.com/opencpn/opencpn
+----
++
+. Configure and build OpenCPN then open solution file in Visual Studio:
+[,console]
+----
+$ cd opencpn
+$ ".\buildwin\winConfig.bat"
+$ ".\build\opencpn.sln"
+----
+Now you can browse the code, run & debug OpenCPN from Visual Studio.  Select
+  the desired build configuration (Debug, Release, etc.) and click the Debug button.
+
+After you close Visual Studio and the command prompt you can return to Visual Studio
+  using just 2 commands. From an _x86 Native Tools Command Prompt_ run:
+[,console]
+----
+$ ".\buildwin\configDev.bat"
+$ ".\build\opencpn.sln"
+----
+*Notes:*
+
+* Managed plugins are only supplied as Release builds. Thus, if you want to
+  debug OpenCPN when any managed plugins are installed, you must debug OpenCPN in
+  Release or RelWithDebInfo mode.  If you build your own plugin in Debug configuration, then
+  you can debug both OpenCPN and your plugin at the same time using the same Visual Studio
+  Debug session.
+
+* You can use msbuild as the command line builder instead of CMake.  The reasons for doing so are:
+** msbuild is faster than CMake or CMake w/Ninja
+** msbuild gives full access to every type of build and project
+
+* We also recommend installing the latest powershell version.  It is more
+powerful and visually friendly.  Install like this:
++
+[,console]
+----
+$ winget install --id Microsoft.Powershell --source winget
+----
+* It is important to have a 'clean' environment.
+** Make sure there are no permanent environment variables related to
+   wxWidgets (these all begin with WX).  If you have any it is safe to delete them.
+** Remove all references to wxWidgets from the permanent PATH environment variables.
+** It is ok to install tools such as NSIS but not required.  Any tools required to
+   build or package will be automatically installed by the 'buildwin\winConfig.bat' script.
+** The 'winConfig.bat' script does not install Visual Studio. Neither does it install
+   tools such as git or npm as these are not used by the build system.
+* The 'winConfig.bat' script sets up 4 folders beneath the 'build' folder that house 4 different
+   runtime configurations based on the 4 standard build types. Since each configuration is a
+   standalone local instance of OpenCPN, they have to be run in 'portable' mode.
+   To manually launch a particular configruation (e.g. RelWithDebInfo) set the working
+   folder to OpenCPN\build\RelWithDebInfo then launch OpenCPN in portable mode. For example:
++
+[,console]
+----
+$ cd OpenCPN
+$ ".\buildwin\configdev.bat"
+$ cd ".\build\RELWITHDEBINFO"
+$ ".\opencpn" -p
+----
++
+
+* The 'winConfig.bat' script also has the ability to automatically clean before building.
+  The full list of command line options are as follows:
++
+[,console]
+----
+ --clean :: clean and reinitialize the build folder
+ --rebuild :: rebuild all sources
+ --help :: print helpful text
+ --relwithdebinfo :: build relwithdebinfo configuration
+ --debug :: build debug configuration
+ --release :: build release configuration
+ --minsizerel :: build release configuration
+ --all :: setup and build all four standard configurations (this is the default)
+----
++
+
+* Useful msbuild command line examples follow. Type these commands after running
+  '.\buildwin\configdev.bat' from the root opencpn git managed folder.
+** Clean and build entire OpenCPN project to create debug build
++
+[,console]
+----
+$ cd build
+$ msbuild /m -t:Rebuild -p:Configuration=Debug opencpn.sln
+----
++
+** Build Release version of the installer package
++
+[,console]
+----
+$ cd build
+$ msbuild /v:m /m -p:Configuration=Release PACKAGE.vcxproj
+----
++
+** Clean and build every project as a Release build with debug info
++
+[,console]
+----
+$ cd build
+$ msbuild /m -t:Rebuild -p:Configuration=RelWithDebInfo All_BUILD.vcxproj
+----
++
+** Build debug version of OpenCPN core
++
+[,console]
+----
+$ cd build
+$ msbuild /m -t:Build -p:Configuration=Debug opencpn.vcxproj
+----
++
+** Clean opencpn-cmd.exe
++
+[,console]
+----
+$ cd build
+$ msbuild /m -t:Clean -p:Configuration=Debug opencpn-cmd.vcxproj
+----
++
+** Clean and build chart downloader plugin
++
+[,console]
+----
+$ cd build
+$ msbuild /m -t:Rebuild -p:Configuration=Debug plugins\chartdldr_pi\chartdldr_pi.vcxproj
+----
++
+* You can use still use CMake if you like. This example will build a Windows installer
+* executable with debug configuration. This can be useful to find otherwise hidden debug asserts.
++
+[,console]
+----
+$ cd build
+$ cmake -DCMAKE_INSTALL_PREFIX="C:\Program Files (x86)\OpenCPN" ..
+$ cmake --build . --config Debug --target Package
+----
++
+* This will clean and build a Release build
++
+[,console]
+----
+$ cd build
+$ cmake --build . --config Release --clean-first
+----
++
+* It is possible to `attach` the Visual Studio debugger to a running instance.
+ This is useful if you create an installer, install and run OpenCPN from the start menu.
+ Once OpenCPN is running in its native enviroment the Visual Studio debugger can attach
+ itself to the running instance.  Find ```Attach to process...``` under the Debug menu item.
