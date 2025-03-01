@@ -4,7 +4,6 @@ DEB config from: antonm - Anton Martchukov <anton@martchukov.com>
 Update:   sethdart (Jean-Eudes Onfray) with parts from balp (Anders Arnholm)
 #]]
 
-
 #[[
 Copyright (C) 2010 by David S. Register
 This program is free software; you can redistribute it and/or modify
