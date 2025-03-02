@@ -21,7 +21,6 @@ with the following wxWidgets hosts:
          MSWindows            (__WXMSW__)
          MAC OSx              (__WXOSX__)
 
-
 ----------------------------------------------------------------------
 3.  Platform Specific Build Notes
 ----------------------------------------------------------------------
