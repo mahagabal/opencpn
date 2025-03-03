@@ -9,7 +9,7 @@ devices a compatiblity layer is installed which makes things work as earlier.
 However, the new system can be used also for nmea0183 where it offers more
 flexibility and performance.
 
-Handling of messages consists of six steps:
+Handling of messages consists of six staps:
 
 1. Define the type of message to work with
 2. Declare a listening object.
