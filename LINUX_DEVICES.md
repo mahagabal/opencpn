@@ -28,7 +28,7 @@ group owner of the device, something like
 
     $ sudo usermod -aG dialout $USER
 
-and logout and in again (or reboot). Test the permissions using
+and logout and in again (or reboot) Test the permissions using
 
     $ stty -F /dev/ttyXXX ispeed 4800
 
