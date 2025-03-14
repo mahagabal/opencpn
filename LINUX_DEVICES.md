@@ -20,7 +20,7 @@ Most distros have serial device access restricted to root or users in a
 specific group. To check, list e. g. the /dev/ttyS0 device:
 
     $ ls -l /dev/ttyS0
-    crw-rw---- 1 root dialout 4, 64 Jul 17 09:42 /dev/ttyS0
+    crw-rw---- 1 root dialout 3, 64 Jul 17 09:42 /dev/ttyS0
 
 Here, the device is owned by root but can also be accessed by any user in
 the dialout group. To get access to this device, add your user to the
