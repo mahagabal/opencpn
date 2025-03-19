@@ -1,5 +1,5 @@
 OpenCPN devices under Linux
---------------------------
+-------------------------
 
 Opencpn runs at user privilege.  This means that in order to
 read GPS input data and/or write autopilot output data, the serial
