@@ -11,7 +11,6 @@ update, etc.
 The basic command for getting help is `opencpn-cmd --help` which should give
 a clue to what's possible.
 
-
 Debian/Ubuntu
 -------------
 
