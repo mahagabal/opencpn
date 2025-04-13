@@ -14,7 +14,7 @@ These aspects, permissions and dynamic names, is about udev which handles
 the devices in all modern Linux distros.
 
 
-## Device access.
+## Device access
 
 Most distros have serial device access restricted to root or users in a
 specific group. To check, list e. g. the /dev/ttyS0 device:
