@@ -3,6 +3,7 @@ NSIS Installer script for OpenCPN (Windows)
 NSIS version 2.46
 Written by Gunther Pilz (Netsurfer) netsurfer@opencpn.de
 -------------------------------------------------------------------------------------------------------
+
 CMake variables
 	CPACK_PACKAGE_NAME "OpenCPN"
 	CPACK_NSIS_PACKAGE_NAME_LC "opencpn"
